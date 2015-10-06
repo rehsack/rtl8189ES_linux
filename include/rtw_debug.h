@@ -161,21 +161,30 @@ extern void rtl871x_cedbg(const char *fmt, ...);
 	#define MSG_8192C do {} while(0)
 	#define DBG_8192C do {} while(0)
 	#define DBG_871X_LEVEL do {} while(0)
+	#define _DBG_871X_LEVEL do {} while(0)
+	#define DBG_871X_SEL do {} while(0)
+	#define DBG_871X_SEL_NL do {} while(0)
 #else
 	#define DBG_871X(x, ...) do {} while(0)
 	#define MSG_8192C(x, ...) do {} while(0)
 	#define DBG_8192C(x,...) do {} while(0)
 	#define DBG_871X_LEVEL(x,...) do {} while(0)
+	#define _DBG_871X_LEVEL(x, ...) do {} while(0)
+	#define DBG_871X_SEL(x, ...) do {} while(0)
+	#define DBG_871X_SEL_NL(x, ...) do {} while(0)
 #endif
 
 #undef _dbgdump
 #undef _seqdump
+
+#define RTW_DBGDUMP 0 /* 'stream' for _dbgdump */
 
 #ifndef _RTL871X_DEBUG_C_
 	extern u32 GlobalDebugLevel;
 	extern u64 GlobalDebugComponents;
 #endif
 
+#if defined(DBG) && (DBG != 0)
 #if defined(PLATFORM_WINDOWS) && defined(PLATFORM_OS_XP)
 	#define _dbgdump DbgPrint
 	#define _seqdump(sel, fmt, arg...) _dbgdump(fmt, ##arg)
@@ -188,6 +197,7 @@ extern void rtl871x_cedbg(const char *fmt, ...);
 #elif defined PLATFORM_FREEBSD
 	#define _dbgdump printf
 	#define _seqdump(sel, fmt, arg...) _dbgdump(fmt, ##arg)
+#endif
 #endif
 
 #define DRIVER_PREFIX "RTL871X: "
@@ -221,9 +231,9 @@ extern void rtl871x_cedbg(const char *fmt, ...);
 	}while(0)
 
 #if defined(_seqdump)
-#define RTW_DBGDUMP 0 /* 'stream' for _dbgdump */
 
 /* dump message to selected 'stream' */
+#undef DBG_871X_SEL
 #define DBG_871X_SEL(sel, fmt, arg...) \
 	do {\
 		if (sel == RTW_DBGDUMP)\
@@ -234,6 +244,7 @@ extern void rtl871x_cedbg(const char *fmt, ...);
 	}while(0)
 
 /* dump message to selected 'stream' with driver-defined prefix */
+#undef DBG_871X_SEL_NL
 #define DBG_871X_SEL_NL(sel, fmt, arg...) \
 	do {\
 		if (sel == RTW_DBGDUMP)\
@@ -244,6 +255,10 @@ extern void rtl871x_cedbg(const char *fmt, ...);
 	}while(0)
 
 #endif /* defined(_seqdump) */
+
+#else /* defined(_dbgdump) */
+
+#define DBG_871X_EXP(level, EXP) do { (void)(level); (void)(EXP); } while (0)
 
 #endif /* defined(_dbgdump) */
 
