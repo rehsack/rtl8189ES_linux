@@ -1638,18 +1638,21 @@ export CONFIG_RTL8189ES = m
 all: modules
 
 modules:
-	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
+	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KERNEL_SRC) M=$(shell pwd)  modules
 
 strip:
 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
 
+modules_install:
+	$(MAKE) -C $(KERNEL_SRC) M=$(shell pwd) modules_install
+
 install:
 	install -p -m 644 $(MODULE_NAME).ko  $(MODDESTDIR)
-	/sbin/depmod -a ${KVER}
+	depmod -a ${KVER}
 
 uninstall:
 	rm -f $(MODDESTDIR)/$(MODULE_NAME).ko
-	/sbin/depmod -a ${KVER}
+	depmod -a ${KVER}
 
 config_r:
 	@echo "make config"
