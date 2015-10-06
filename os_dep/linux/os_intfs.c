@@ -192,7 +192,7 @@ int rtw_mc2u_disable = 0;
 #endif	// CONFIG_TX_MCAST2UNI
 
 #ifdef CONFIG_80211D
-int rtw_80211d = 0;
+int rtw_80211d = 1;
 #endif
 
 #ifdef CONFIG_SPECIAL_SETTING_FOR_FUNAI_TV
